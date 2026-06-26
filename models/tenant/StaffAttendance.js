@@ -116,5 +116,5 @@ staffAttendanceSchema.index({ tenantId: 1, clinicId: 1, attendanceDate: -1 });
 staffAttendanceSchema.index({ tenantId: 1, clinicId: 1, status: 1 });
 staffAttendanceSchema.index({ tenantId: 1, clinicId: 1, isRegularized: 1 });
 
-module.exports = mongoose.models.StaffAttendance ||;
+module.exports = mongoose.models.StaffAttendance ||
   mongoose.model('StaffAttendance', staffAttendanceSchema);
