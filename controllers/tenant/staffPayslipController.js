@@ -1,14 +1,12 @@
 // server/controllers/tenant/staffPayslipController.js
-import mongoose from 'mongoose';
-import { createRequire } from 'module';
+const mongoose = require('mongoose');
 
-import {
+const {
   getTenantModels,
   resolveLoggedInStaff,
   resolveSaasScope,
-} from './staffAttendanceShared.js';
+} = require('./staffAttendanceShared.js');
 
-const require = createRequire(import.meta.url);
 const Clinic = require('../../models/Clinic.js');
 
 function parseMoney(value) {
@@ -254,7 +252,7 @@ async function buildPayslipsForStaff(req, staffDocs, range, workingDays) {
   );
 }
 
-export const getAllStaffPayslips = async (req, res, next) => {
+const getAllStaffPayslips = async (req, res, next) => {
   try {
     const { Staff } = await getTenantModels(req);
 
@@ -326,7 +324,7 @@ export const getAllStaffPayslips = async (req, res, next) => {
   }
 };
 
-export const getStaffPayslip = async (req, res, next) => {
+const getStaffPayslip = async (req, res, next) => {
   try {
     const { Staff } = await getTenantModels(req);
     const { staffId } = req.params;
@@ -366,7 +364,7 @@ export const getStaffPayslip = async (req, res, next) => {
   }
 };
 
-export const getMyPayslip = async (req, res, next) => {
+const getMyPayslip = async (req, res, next) => {
   try {
     const { Staff } = await getTenantModels(req);
     const { month, year, workingDays } = req.query;
@@ -400,4 +398,10 @@ export const getMyPayslip = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  getAllStaffPayslips,
+  getStaffPayslip,
+  getMyPayslip,
 };

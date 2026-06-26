@@ -1,11 +1,11 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-import {
+const {
   getTenantModels,
   getUserName,
   resolveLoggedInStaff,
   resolveSaasScope,
-} from './staffAttendanceShared.js';
+} = require('./staffAttendanceShared.js');
 
 function parseAttendanceTime(attendanceDate, timeValue) {
   if (!timeValue) return null;
@@ -58,7 +58,7 @@ function getRegularizationPopulate() {
   ];
 }
 
-export const createMyAttendanceRegularization = async (req, res, next) => {
+const createMyAttendanceRegularization = async (req, res, next) => {
   try {
     const {
       StaffAttendance,
@@ -163,7 +163,7 @@ export const createMyAttendanceRegularization = async (req, res, next) => {
   }
 };
 
-export const createStaffAttendanceRegularization = async (req, res, next) => {
+const createStaffAttendanceRegularization = async (req, res, next) => {
   try {
     const {
       Staff,
@@ -263,7 +263,7 @@ export const createStaffAttendanceRegularization = async (req, res, next) => {
   }
 };
 
-export const getAttendanceRegularizations = async (req, res, next) => {
+const getAttendanceRegularizations = async (req, res, next) => {
   try {
     const { StaffAttendanceRegularization } = await getTenantModels(req);
 
@@ -327,7 +327,7 @@ export const getAttendanceRegularizations = async (req, res, next) => {
   }
 };
 
-export const getMyAttendanceRegularizations = async (req, res, next) => {
+const getMyAttendanceRegularizations = async (req, res, next) => {
   try {
     const { StaffAttendanceRegularization } = await getTenantModels(req);
 
@@ -386,7 +386,7 @@ export const getMyAttendanceRegularizations = async (req, res, next) => {
   }
 };
 
-export const approveAttendanceRegularization = async (req, res, next) => {
+const approveAttendanceRegularization = async (req, res, next) => {
   try {
     const {
       StaffAttendance,
@@ -516,7 +516,7 @@ export const approveAttendanceRegularization = async (req, res, next) => {
   }
 };
 
-export const rejectAttendanceRegularization = async (req, res, next) => {
+const rejectAttendanceRegularization = async (req, res, next) => {
   try {
     const { StaffAttendanceRegularization } = await getTenantModels(req);
 
@@ -567,4 +567,13 @@ export const rejectAttendanceRegularization = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  createMyAttendanceRegularization,
+  createStaffAttendanceRegularization,
+  getAttendanceRegularizations,
+  getMyAttendanceRegularizations,
+  approveAttendanceRegularization,
+  rejectAttendanceRegularization,
 };

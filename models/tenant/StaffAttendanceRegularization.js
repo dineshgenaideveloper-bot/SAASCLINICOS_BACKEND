@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const staffAttendanceRegularizationSchema = new mongoose.Schema(
   {
@@ -132,7 +132,7 @@ staffAttendanceRegularizationSchema.index({
   status: 1,
 });
 
-export default mongoose.models.StaffAttendanceRegularization ||
+module.exports = mongoose.models.StaffAttendanceRegularization ||
   mongoose.model(
     'StaffAttendanceRegularization',
     staffAttendanceRegularizationSchema

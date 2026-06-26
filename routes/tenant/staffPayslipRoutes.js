@@ -1,11 +1,11 @@
 // server/routes/tenant/staffPayslipRoutes.js
-import express from 'express';
+const express = require('express');
 
-import {
+const {
   getAllStaffPayslips,
   getStaffPayslip,
   getMyPayslip,
-} from '../../controllers/tenant/staffPayslipController.js';
+} = require('../../controllers/tenant/staffPayslipController.js');
 
 const router = express.Router();
 
@@ -13,4 +13,4 @@ router.get('/me', getMyPayslip);
 router.get('/', getAllStaffPayslips);
 router.get('/staff/:staffId', getStaffPayslip);
 
-export default router;
+module.exports = router;

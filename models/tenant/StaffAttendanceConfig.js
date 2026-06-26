@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const staffAttendanceConfigSchema = new mongoose.Schema(
   {
@@ -72,4 +72,4 @@ const staffAttendanceConfigSchema = new mongoose.Schema(
 
 staffAttendanceConfigSchema.index({ tenantId: 1, clinicId: 1 }, { unique: true });
 
-export default mongoose.model('StaffAttendanceConfig', staffAttendanceConfigSchema);
+module.exports = mongoose.model('StaffAttendanceConfig', staffAttendanceConfigSchema);

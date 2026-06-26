@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
-import {
+const {
   assertValidConfig,
   buildAttendanceQuery,
   buildLocationPayload,
@@ -15,9 +15,9 @@ import {
   resolveSaasScope,
   resolveStaffById,
   sendAttendanceError,
-} from './staffAttendanceShared.js';
+} = require('./staffAttendanceShared.js');
 
-export const getAttendanceConfig = async (req, res, next) => {
+const getAttendanceConfig = async (req, res, next) => {
   try {
     const { StaffAttendanceConfig } = await getTenantModels(req);
     const scope = resolveSaasScope(req);
@@ -51,7 +51,7 @@ export const getAttendanceConfig = async (req, res, next) => {
   }
 };
 
-export const saveAttendanceConfig = async (req, res, next) => {
+const saveAttendanceConfig = async (req, res, next) => {
   try {
     const { StaffAttendanceConfig } = await getTenantModels(req);
     const scope = resolveSaasScope(req);
@@ -126,7 +126,7 @@ export const saveAttendanceConfig = async (req, res, next) => {
   }
 };
 
-export const getAttendance = async (req, res, next) => {
+const getAttendance = async (req, res, next) => {
   try {
     const { StaffAttendance, Staff } = await getTenantModels(req);
 
@@ -205,7 +205,7 @@ export const getAttendance = async (req, res, next) => {
   }
 };
 
-export const getTodayAttendance = async (req, res, next) => {
+const getTodayAttendance = async (req, res, next) => {
   try {
     const { StaffAttendance } = await getTenantModels(req);
     const { staff } = req.query;
@@ -242,7 +242,7 @@ export const getTodayAttendance = async (req, res, next) => {
   }
 };
 
-export const checkIn = async (req, res, next) => {
+const checkIn = async (req, res, next) => {
   try {
     const { StaffAttendance } = await getTenantModels(req);
     const { staff: staffId, latitude, longitude, accuracy, notes } = req.body;
@@ -338,7 +338,7 @@ export const checkIn = async (req, res, next) => {
   }
 };
 
-export const checkOut = async (req, res, next) => {
+const checkOut = async (req, res, next) => {
   try {
     const { StaffAttendance } = await getTenantModels(req);
     const { staff: staffId, latitude, longitude, accuracy, notes } = req.body;
@@ -438,7 +438,7 @@ export const checkOut = async (req, res, next) => {
   }
 };
 
-export const getAttendanceSummary = async (req, res, next) => {
+const getAttendanceSummary = async (req, res, next) => {
   try {
     const { StaffAttendance, Staff } = await getTenantModels(req);
     const { from, to, staff } = req.query;
@@ -518,7 +518,7 @@ export const getAttendanceSummary = async (req, res, next) => {
   }
 };
 
-export const getMyAttendanceStatus = async (req, res, next) => {
+const getMyAttendanceStatus = async (req, res, next) => {
   try {
     const { StaffAttendance } = await getTenantModels(req);
 
@@ -554,7 +554,7 @@ export const getMyAttendanceStatus = async (req, res, next) => {
   }
 };
 
-export const checkInMe = async (req, res, next) => {
+const checkInMe = async (req, res, next) => {
   try {
     const staff = await resolveLoggedInStaff(req);
 
@@ -566,7 +566,7 @@ export const checkInMe = async (req, res, next) => {
   }
 };
 
-export const checkOutMe = async (req, res, next) => {
+const checkOutMe = async (req, res, next) => {
   try {
     const staff = await resolveLoggedInStaff(req);
 
@@ -578,7 +578,7 @@ export const checkOutMe = async (req, res, next) => {
   }
 };
 
-export const getMyAttendance = async (req, res, next) => {
+const getMyAttendance = async (req, res, next) => {
   try {
     const { StaffAttendance } = await getTenantModels(req);
 
@@ -652,4 +652,18 @@ export const getMyAttendance = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
+};
+
+module.exports = {
+  getAttendanceConfig,
+  saveAttendanceConfig,
+  getAttendance,
+  getTodayAttendance,
+  checkIn,
+  checkOut,
+  getAttendanceSummary,
+  getMyAttendanceStatus,
+  checkInMe,
+  checkOutMe,
+  getMyAttendance,
 };

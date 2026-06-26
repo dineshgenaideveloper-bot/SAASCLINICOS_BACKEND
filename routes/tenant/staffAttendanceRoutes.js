@@ -1,6 +1,6 @@
-import express from 'express';
+const express = require('express');
 
-import {
+const {
   getAttendanceConfig,
   saveAttendanceConfig,
   getAttendance,
@@ -12,16 +12,16 @@ import {
   checkInMe,
   checkOutMe,
   getMyAttendance,
-} from '../../controllers/tenant/staffAttendanceController.js';
+} = require('../../controllers/tenant/staffAttendanceController.js');
 
-import {
+const {
   createMyAttendanceRegularization,
   createStaffAttendanceRegularization,
   getAttendanceRegularizations,
   getMyAttendanceRegularizations,
   approveAttendanceRegularization,
   rejectAttendanceRegularization,
-} from '../../controllers/tenant/staffAttendanceRegularizationController.js';
+} = require('../../controllers/tenant/staffAttendanceRegularizationController.js');
 
 const router = express.Router();
 
@@ -53,4 +53,4 @@ router.post('/regularizations', createStaffAttendanceRegularization);
 router.patch('/regularizations/:id/approve', approveAttendanceRegularization);
 router.patch('/regularizations/:id/reject', rejectAttendanceRegularization);
 
-export default router;
+module.exports = router;
