@@ -1,18 +1,19 @@
-import mongoose from 'mongoose';
-import jwt from 'jsonwebtoken';
+// server/controllers/tenant/staffAttendanceShared.js
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
-import { getTenantDB } from '../../config/tenantDb.js';
+const { getTenantDB } = require('../../config/tenantDb.js');
 
-import StaffAttendanceBase from '../../models/tenant/StaffAttendance.js';
-import StaffAttendanceConfigBase from '../../models/tenant/StaffAttendanceConfig.js';
-import StaffModelFactoryImport from '../../models/tenant/Staff.js';
-import StaffAttendanceRegularizationBase from '../../models/tenant/StaffAttendanceRegularization.js';
+const StaffAttendanceBase = require('../../models/tenant/StaffAttendance.js');
+const StaffAttendanceConfigBase = require('../../models/tenant/StaffAttendanceConfig.js');
+const StaffModelFactoryImport = require('../../models/tenant/Staff.js');
+const StaffAttendanceRegularizationBase = require('../../models/tenant/StaffAttendanceRegularization.js');
 
 function unwrapModule(mod) {
   return mod?.default || mod;
 }
 
-export function createModel(connection, importedModelOrFactory, modelName) {
+function createModel(connection, importedModelOrFactory, modelName) {
   const source = unwrapModule(importedModelOrFactory);
 
   if (!connection || !connection.models || typeof connection.model !== 'function') {
@@ -30,7 +31,7 @@ export function createModel(connection, importedModelOrFactory, modelName) {
   throw new Error(`${modelName} model is not loaded correctly`);
 }
 
-export function asIdString(value) {
+function asIdString(value) {
   if (!value) return '';
   if (typeof value === 'string') return value;
   if (value._id) return String(value._id);
@@ -38,7 +39,7 @@ export function asIdString(value) {
   return String(value);
 }
 
-export function getTokenUser(req) {
+function getTokenUser(req) {
   const authHeader = req.headers?.authorization || req.headers?.Authorization || '';
 
   if (!authHeader.startsWith('Bearer ')) {
@@ -67,7 +68,7 @@ export function getTokenUser(req) {
   }
 }
 
-export function getTenantIdFromReq(req) {
+function getTenantIdFromReq(req) {
   const tokenUser = getTokenUser(req);
   const user = req.user || {};
 
@@ -81,7 +82,7 @@ export function getTenantIdFromReq(req) {
   );
 }
 
-export function resolveSaasScope(req) {
+function resolveSaasScope(req) {
   const tenantId = getTenantIdFromReq(req);
 
   return {
@@ -90,7 +91,7 @@ export function resolveSaasScope(req) {
   };
 }
 
-export async function getTenantModels(req) {
+async function getTenantModels(req) {
   const tenantId = getTenantIdFromReq(req);
 
   if (!tenantId || tenantId === 'default') {
@@ -129,7 +130,7 @@ export async function getTenantModels(req) {
   };
 }
 
-export function getUserName(req) {
+function getUserName(req) {
   const tokenUser = getTokenUser(req);
 
   return (
@@ -143,7 +144,7 @@ export function getUserName(req) {
   );
 }
 
-export function getDistanceInMeters(lat1, lon1, lat2, lon2) {
+function getDistanceInMeters(lat1, lon1, lat2, lon2) {
   const R = 6371000;
 
   const dLat = ((lat2 - lat1) * Math.PI) / 180;
@@ -161,7 +162,7 @@ export function getDistanceInMeters(lat1, lon1, lat2, lon2) {
   return R * c;
 }
 
-export function getLocalDateKey(date = new Date(), timeZone = 'Asia/Kolkata') {
+function getLocalDateKey(date = new Date(), timeZone = 'Asia/Kolkata') {
   const parts = new Intl.DateTimeFormat('en-CA', {
     timeZone,
     year: 'numeric',
@@ -176,7 +177,7 @@ export function getLocalDateKey(date = new Date(), timeZone = 'Asia/Kolkata') {
   return `${year}-${month}-${day}`;
 }
 
-export function assertValidConfig(config) {
+function assertValidConfig(config) {
   if (!config) {
     const error = new Error(
       'Staff attendance location config is not saved for this clinic'
@@ -210,7 +211,7 @@ export function assertValidConfig(config) {
   }
 }
 
-export async function getConfigForRequest(req) {
+async function getConfigForRequest(req) {
   const { StaffAttendanceConfig } = await getTenantModels(req);
   const scope = resolveSaasScope(req);
 
@@ -226,7 +227,7 @@ export async function getConfigForRequest(req) {
   return config;
 }
 
-export function buildLocationPayload({
+function buildLocationPayload({
   latitude,
   longitude,
   accuracy,
@@ -297,7 +298,7 @@ export function buildLocationPayload({
   };
 }
 
-export function getStaffDisplayName(staff) {
+function getStaffDisplayName(staff) {
   return (
     staff.name ||
     staff.staffName ||
@@ -307,14 +308,14 @@ export function getStaffDisplayName(staff) {
   );
 }
 
-export function buildAttendanceQuery(req, extra = {}) {
+function buildAttendanceQuery(req, extra = {}) {
   return {
     ...resolveSaasScope(req),
     ...extra,
   };
 }
 
-export async function resolveStaffById(req, staffId) {
+async function resolveStaffById(req, staffId) {
   const { Staff } = await getTenantModels(req);
 
   if (!staffId || !mongoose.Types.ObjectId.isValid(String(staffId))) {
@@ -324,7 +325,7 @@ export async function resolveStaffById(req, staffId) {
   return Staff.findById(staffId).lean();
 }
 
-export async function resolveLoggedInStaff(req) {
+async function resolveLoggedInStaff(req) {
   const { Staff } = await getTenantModels(req);
   const tokenUser = getTokenUser(req);
 
@@ -406,7 +407,7 @@ export async function resolveLoggedInStaff(req) {
   throw error;
 }
 
-export async function getMatchingStaffIds(Staff, search) {
+async function getMatchingStaffIds(Staff, search) {
   const q = String(search || '').trim();
 
   if (!q) {
@@ -438,7 +439,7 @@ export async function getMatchingStaffIds(Staff, search) {
   return matchingStaff.map((staff) => staff._id);
 }
 
-export function getSafeAttendanceSort(sortBy, sortOrder) {
+function getSafeAttendanceSort(sortBy, sortOrder) {
   const allowedSortFields = [
     'attendanceDate',
     'createdAt',
@@ -458,7 +459,7 @@ export function getSafeAttendanceSort(sortBy, sortOrder) {
   };
 }
 
-export function sendAttendanceError(res, error) {
+function sendAttendanceError(res, error) {
   return res.status(error.statusCode || 400).json({
     success: false,
     message: error.message,
@@ -466,3 +467,25 @@ export function sendAttendanceError(res, error) {
     radiusMeters: error.radiusMeters,
   });
 }
+
+module.exports = {
+  createModel,
+  asIdString,
+  getTokenUser,
+  getTenantIdFromReq,
+  resolveSaasScope,
+  getTenantModels,
+  getUserName,
+  getDistanceInMeters,
+  getLocalDateKey,
+  assertValidConfig,
+  getConfigForRequest,
+  buildLocationPayload,
+  getStaffDisplayName,
+  buildAttendanceQuery,
+  resolveStaffById,
+  resolveLoggedInStaff,
+  getMatchingStaffIds,
+  getSafeAttendanceSort,
+  sendAttendanceError,
+};
